@@ -3,7 +3,7 @@
 
 $(function() {
   $.ajax({
-    url: "csv.php",
+    url: "/sellersociety/csv.php",
     success: function(data) {
       // Convert CSV data to JS Object (JSON). This uses jquery.csv.min.js
       artist_data = $.csv.toObjects(data);
