@@ -3,7 +3,9 @@
 
 $(function() {
   $.ajax({
-    url: "/sellersociety/csv.php",
+    url:
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vQkSng8nHD8GHqdZfrWTuHP9T6e580kdXvKqB8mV_LZRDHbW4pBP_f4q5WrxgsIcXCuJ5ddT1egZbHK/pub?output=csv",
+
     success: function(data) {
       // Convert CSV data to JS Object (JSON). This uses jquery.csv.min.js
       artist_data = $.csv.toObjects(data);
@@ -11,84 +13,84 @@ $(function() {
       x = 0;
       artist_data.forEach(function() {
         // Skip this user if the 'is_visible' field is empty or 0 (assuming you have an is_visible field to hide/show people)
-        if (artist_data[x]["Visible"] == 0) return;
+        if (artist_data[x]["Visible"] == "1") {
+          // Extract seller image id
+          seller_string = artist_data[x]["Seller Photo"];
+          seller_id_pos = seller_string.indexOf("id=") + 3;
+          seller_id = seller_string.substr(seller_id_pos);
 
-        // Extract seller image id
-        seller_string = artist_data[x]["Seller Photo"];
-        seller_id_pos = seller_string.indexOf("id=") + 3;
-        seller_id = seller_string.substr(seller_id_pos);
+          // Extract 1st product image id
+          product1_string = artist_data[x]["Product Photo 1"];
+          product1_id_pos = product1_string.indexOf("id=") + 3;
+          product1_id = product1_string.substr(product1_id_pos);
 
-        // Extract 1st product image id
-        product1_string = artist_data[x]["Product Photo 1"];
-        product1_id_pos = product1_string.indexOf("id=") + 3;
-        product1_id = product1_string.substr(product1_id_pos);
+          // Extract 2nd product image id
+          product2_string = artist_data[x]["Product Photo 2"];
+          product2_id_pos = product2_string.indexOf("id=") + 3;
+          product2_id = product2_string.substr(product2_id_pos);
 
-        // Extract 2nd product image id
-        product2_string = artist_data[x]["Product Photo 2"];
-        product2_id_pos = product2_string.indexOf("id=") + 3;
-        product2_id = product2_string.substr(product2_id_pos);
+          // Extract 3rd product image id
+          product3_string = artist_data[x]["Product Photo 3"];
+          product3_id_pos = product3_string.indexOf("id=") + 3;
+          product3_id = product3_string.substr(product3_id_pos);
 
-        // Extract 3rd product image id
-        product3_string = artist_data[x]["Product Photo 3"];
-        product3_id_pos = product3_string.indexOf("id=") + 3;
-        product3_id = product3_string.substr(product3_id_pos);
-
-        // Loop through all rows in spreadsheet and create a new div for each person
-        $(".seller-roster").append(
-          `
+          // Loop through all rows in spreadsheet and create a new div for each person
+          $(".seller-roster").append(
+            `
             <div class="seller-object">
                 <div class="seller-object-top">
                     <div class="seller-carousel fotorama" data-loop="true" data-keyboard="true" data-arrows="always" data-fit="cover" data-width="360px" data-height="360px">
                     <img src="https://drive.google.com/thumbnail?id=` +
-            product1_id +
-            `&sz=w360-h360">
+              product1_id +
+              `&sz=w360-h360">
                     <img src="https://drive.google.com/thumbnail?id=` +
-            product2_id +
-            `&sz=w360-h360">
+              product2_id +
+              `&sz=w360-h360">
                     <img src="https://drive.google.com/thumbnail?id=` +
-            product3_id +
-            `&sz=w360-h360">
+              product3_id +
+              `&sz=w360-h360">
                     </div>
                     <div class="seller-photo">
                         <img src="https://drive.google.com/thumbnail?id=` +
-            seller_id +
-            `">
+              seller_id +
+              `">
                     </div>
                 </div>
                 <div class="seller-object-bottom">
                     <div class="seller-name` +
-            x +
-            `" id="seller-name-id">
+              x +
+              `" id="seller-name-id">
                     <h2>` +
-            artist_data[x]["Seller Name"] +
-            `</h2>
+              artist_data[x]["Seller Name"] +
+              `</h2>
                     </div>
                     <div class="seller-tagline">
                         <h4>` +
-            artist_data[x]["Store Tagline"] +
-            `</h4>
+              artist_data[x]["Store Tagline"] +
+              `</h4>
                     </div>
                     <div class="seller-description">
                         <p>` +
-            artist_data[x]["Store Description"] +
-            `</p>
+              artist_data[x]["Store Description"] +
+              `</p>
                     </div>
                 </div>
                 <a href=` +
-            artist_data[x]["Store Link"] +
-            ` target="_blank" class="no-underline">
+              artist_data[x]["Store Link"] +
+              ` target="_blank" class="no-underline">
                   <div class="seller-button">
                     <h3>Goto Store</h3>
                     <i class="fas fa-external-link-alt"></i>
                   </div>
                 </a>
             </div>`
-        );
+          );
 
-        //Add alumni badge if needed
-        if (artist_data[x]["Alumni"] == 1) {
-          alumvar = $(".seller-name" + x);
-          $(alumvar).append(`<i class="fas fa-graduation-cap"></i>`);
+          //Add alumni badge if needed
+          if (artist_data[x]["Alumni"] == 1) {
+            alumvar = $(".seller-name" + x);
+            $(alumvar).append(`<i class="fas fa-graduation-cap"></i>`);
+          }
         }
 
         // Add 1 to x to move to next row of spreadsheet
